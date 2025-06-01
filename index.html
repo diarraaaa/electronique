@@ -1,426 +1,726 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>QCM Complet 50 Questions - Composants Electroniques</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QCM Électronique Analogique</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    margin: 0;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-  }
-  #cards-container {
-    max-width: 700px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  .card {
-    width: 100%;
-    height: 260px;
-    perspective: 1000px;
-    cursor: pointer;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-  }
-  .card.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background: #f0f0f3;
-    border-radius: 15px;
-    box-shadow:
-      8px 8px 15px #bebebe,
-      -8px -8px 15px #ffffff;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-  }
-  .card.flipped .card-inner {
-    transform: rotateY(180deg);
-  }
-  .card-front, .card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 15px;
-    backface-visibility: hidden;
-    padding: 20px;
-    box-sizing: border-box;
-    overflow-y: auto;
-  }
-  .card-front {
-    background: #f0f0f3;
-    color: #333;
-  }
-  .card-front p {
-    margin-top: 0;
-    font-weight: 600;
-    font-size: 1.15em;
-  }
-  .options {
-    list-style: none;
-    padding-left: 15px;
-    margin-top: 12px;
-    max-height: 140px;
-    overflow-y: auto;
-  }
-  .options li {
-    margin-bottom: 8px;
-  }
-  .note {
-    font-size: 0.85em;
-    color: #666;
-    margin-top: 10px;
-  }
-  .card-back {
-    background: #764ba2;
-    color: #fff;
-    transform: rotateY(180deg);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    font-size: 1.1em;
-    font-weight: 600;
-  }
-  .answer {
-    margin-top: 15px;
-    font-size: 1.3em;
-    font-weight: 700;
-  }
-  .explanation {
-    margin-top: 14px;
-    font-weight: 400;
-    font-size: 0.95em;
-    line-height: 1.3em;
-    color: #ddd;
-  }
-  /* Scrollbar for options */
-  .options::-webkit-scrollbar {
-    width: 6px;
-  }
-  .options::-webkit-scrollbar-thumb {
-    background: #764ba2;
-    border-radius: 3px;
-  }
-</style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 8px;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            border-radius: 15px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.5s ease forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option:hover:not(.disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        }
+
+        .option.correct {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(69, 160, 73, 0.1));
+        }
+
+        .option.incorrect {
+            border-color: #f44336;
+            background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(211, 47, 47, 0.1));
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .explanation {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 5px solid #667eea;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .explanation h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .score-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .score-number {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .formula {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .question-card {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <h1>QCM Électronique Analogique</h1>
+            <p>Testez vos connaissances sur les bases de l'électronique</p>
+        </div>
 
-<div id="cards-container"></div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-text" id="progressText">0/50</div>
+            </div>
+        </div>
 
-<script>
-  const questions = [
-    ["1. Qu’est-ce qu’un composant passif ?", 
-     ["A) Un composant qui produit de l’énergie.", "B) Un composant qui stocke ou dissipe l’énergie sans en produire.", "C) Un composant actif.", "D) Un composant électronique numérique."], 
-     "B", 
-     "Un composant passif ne génère pas d’énergie. Il peut uniquement stocker de l’énergie (comme un condensateur ou une inductance) ou la dissiper (comme une résistance)."
-    ],
-    ["2. Quelle est la relation de la loi d’Ohm ?", 
-     ["A) V = IR", "B) I = VR", "C) R = VI", "D) V = I/R"], 
-     "A", 
-     "La loi d’Ohm exprime la relation entre la tension (V), le courant (I) et la résistance (R). La tension aux bornes d’une résistance est égale au produit du courant qui la traverse par sa résistance."
-    ],
-    ["3. Lequel est un composant passif ?", 
-     ["A) Transistor", "B) Diode", "C) Résistance", "D) Amplificateur"], 
-     "C", 
-     "La résistance est un composant passif car elle dissipe de l’énergie sous forme de chaleur, sans en produire."
-    ],
-    ["4. Un condensateur a pour fonction :", 
-     ["A) Dissiper l’énergie.", "B) Générer du courant.", "C) Stocker de l’énergie sous forme de champ électrique.", "D) Convertir l’énergie thermique."], 
-     "C", 
-     "Le condensateur emmagasine l’énergie électrique dans un champ électrique créé entre ses plaques."
-    ],
-    ["5. Quelle est l’unité d’un condensateur ?", 
-     ["A) Ohm (Ω)", "B) Farad (F)", "C) Volt (V)", "D) Ampère (A)"], 
-     "B", 
-     "Le farad est l’unité de capacité électrique, correspondant à la capacité d’un condensateur à stocker la charge électrique."
-    ],
-    ["6. Quelle formule donne l’énergie stockée dans un inducteur ?", 
-     ["A) W = 1/2 L I²", "B) W = L I", "C) W = C V²", "D) W = R I²"], 
-     "A", 
-     "L’énergie magnétique stockée dans une inductance dépend de l’inductance (L) et du carré du courant (I)."
-    ],
-    ["7. Une source idéale de tension a :", 
-     ["A) Une tension variable selon le courant.", "B) Une tension constante, indépendante du courant.", "C) Un courant variable.", "D) Une résistance nulle."], 
-     "B", 
-     "Une source idéale maintient une tension constante quelle que soit la charge ou le courant qui traverse le circuit."
-    ],
-    ["8. Qu’est-ce qu’un transistor ?", 
-     ["A) Un composant passif", "B) Un semi-conducteur qui peut amplifier ou commuter un signal.", "C) Une résistance variable.", "D) Un type de condensateur."], 
-     "B", 
-     "Un transistor est un dispositif semi-conducteur utilisé pour amplifier ou commuter des signaux électroniques."
-    ],
-    ["9. La diode permet :", 
-     ["A) Le passage du courant dans les deux sens.", "B) Le passage du courant dans un seul sens.", "C) De stocker l’énergie.", "D) D’amplifier un signal."], 
-     "B", 
-     "La diode ne laisse passer le courant que dans un sens (sens direct) et bloque le courant dans l’autre sens."
-    ],
-    ["10. Que fait une résistance dans un circuit ?", 
-     ["A) Amplifie le courant.", "B) Stocke l’énergie.", "C) Limite le courant et dissipe de l’énergie.", "D) Inverse la polarité."], 
-     "C", 
-     "La résistance limite le courant dans un circuit et dissipe l’énergie sous forme de chaleur."
-    ],
-    ["11. Quel est le symbole d’une résistance dans un schéma électrique ?", 
-     ["A) Un cercle.", "B) Une flèche.", "C) Une ligne en zigzag.", "D) Un triangle."], 
-     "C", 
-     "Le symbole standard d’une résistance est une ligne en zigzag."
-    ],
-    ["12. Quel composant stocke de l’énergie sous forme magnétique ?", 
-     ["A) Condensateur", "B) Résistance", "C) Inductance", "D) Diode"], 
-     "C", 
-     "L’inductance stocke l’énergie dans un champ magnétique créé autour d’une bobine."
-    ],
-    ["13. Que signifie le terme 'semi-conducteur' ?", 
-     ["A) Matériau conducteur parfait.", "B) Matériau isolant.", "C) Matériau dont la conductivité peut être modifiée.", "D) Un composant passif."], 
-     "C", 
-     "Un semi-conducteur a une conductivité électrique intermédiaire qui peut être modifiée par dopage ou conditions externes."
-    ],
-    ["14. Quelle est la fonction principale d’un amplificateur ?", 
-     ["A) Réduire la tension.", "B) Convertir le courant en tension.", "C) Augmenter la puissance d’un signal.", "D) Stocker l’énergie."], 
-     "C", 
-     "L’amplificateur augmente la puissance (amplitude) d’un signal électrique."
-    ],
-    ["15. Quel est l’effet d’une diode Zener ?", 
-     ["A) Permet le passage du courant uniquement en sens direct.", "B) Permet le passage du courant dans les deux sens.", "C) Maintient une tension constante dans un circuit.", "D) Amplifie un signal."], 
-     "C", 
-     "La diode Zener est utilisée pour maintenir une tension de seuil constante dans un circuit (régulateur de tension)."
-    ],
-    ["16. La fréquence est mesurée en :", 
-     ["A) Volts", "B) Ampères", "C) Hertz", "D) Ohms"], 
-     "C", 
-     "La fréquence correspond au nombre de cycles par seconde, mesurée en Hertz (Hz)."
-    ],
-    ["17. Quel composant convertit une tension alternative en tension continue ?", 
-     ["A) Transistor", "B) Résistance", "C) Pont de diodes", "D) Condensateur"], 
-     "C", 
-     "Le pont de diodes (redresseur) convertit la tension alternative en tension continue."
-    ],
-    ["18. Quel est le rôle d’un condensateur dans un circuit ?", 
-     ["A) Empêcher le passage du courant alternatif.", "B) Stocker l’énergie électrique.", "C) Amplifier le signal.", "D) Réduire la résistance."], 
-     "B", 
-     "Le condensateur stocke temporairement de l’énergie sous forme de champ électrique."
-    ],
-    ["19. Quelle grandeur mesure un oscilloscope ?", 
-     ["A) La tension dans le temps.", "B) La résistance.", "C) Le courant constant.", "D) La puissance."], 
-     "A", 
-     "L’oscilloscope affiche la variation de la tension en fonction du temps."
-    ],
-    ["20. Quelle est la caractéristique principale d’un circuit RC ?", 
-     ["A) Il agit comme un filtre passe-bas ou passe-haut.", "B) Il amplifie le courant.", "C) Il stocke de l’énergie magnétique.", "D) Il convertit la tension en courant."], 
-     "A", 
-     "Un circuit RC est utilisé comme filtre pour modifier les fréquences d’un signal."
-    ],
-    ["21. Que signifie 'polarisation' d’un transistor ?", 
-     ["A) Choix de la tension et du courant de travail.", "B) Stockage d’énergie.", "C) Sens du courant dans une diode.", "D) Type de semi-conducteur."], 
-     "A", 
-     "La polarisation définit les conditions électriques pour que le transistor fonctionne correctement."
-    ],
-    ["22. Quelle est la fonction d’une bobine dans un circuit ?", 
-     ["A) Stocker l’énergie électrique.", "B) Convertir la tension.", "C) Stocker l’énergie magnétique.", "D) Amplifier le signal."], 
-     "C", 
-     "La bobine stocke l’énergie sous forme d’un champ magnétique."
-    ],
-    ["23. Quel est l’effet d’un condensateur sur le courant alternatif ?", 
-     ["A) Il bloque le courant.", "B) Il laisse passer le courant.", "C) Il amplifie le courant.", "D) Il convertit le courant."], 
-     "B", 
-     "Le condensateur laisse passer le courant alternatif tout en bloquant le courant continu (après charge)."
-    ],
-    ["24. Que fait une résistance variable ?", 
-     ["A) Change la tension.", "B) Change la résistance.", "C) Stocke de l’énergie.", "D) Amplifie le signal."], 
-     "B", 
-     "Une résistance variable (potentiomètre) permet d’ajuster la valeur de la résistance dans un circuit."
-    ],
-    ["25. Quel est le rôle d’un filtre dans un circuit ?", 
-     ["A) Séparer ou atténuer certaines fréquences.", "B) Amplifier le signal.", "C) Stocker l’énergie.", "D) Modifier la tension."], 
-     "A", 
-     "Les filtres permettent de sélectionner ou de bloquer certaines bandes de fréquences."
-    ],
-    ["26. Qu’est-ce qu’un circuit intégré ?", 
-     ["A) Un seul composant passif.", "B) Un ensemble de composants sur une puce.", "C) Une diode spéciale.", "D) Un composant actif unique."], 
-     "B", 
-     "Un circuit intégré regroupe plusieurs composants électroniques miniaturisés sur une puce."
-    ],
-    ["27. Quel est le rôle d’un fusible ?", 
-     ["A) Protéger contre les surtensions.", "B) Protéger contre les surintensités.", "C) Stocker de l’énergie.", "D) Amplifier le courant."], 
-     "B", 
-     "Le fusible protège un circuit en coupant le courant si l’intensité devient trop élevée."
-    ],
-    ["28. Qu’est-ce qu’un signal analogique ?", 
-     ["A) Un signal numérique.", "B) Un signal continu avec des valeurs infinies possibles.", "C) Un signal binaire.", "D) Un signal fixe."], 
-     "B", 
-     "Le signal analogique varie continuellement et peut prendre une infinité de valeurs."
-    ],
-    ["29. Quel est le rôle d’une antenne ?", 
-     ["A) Amplifier le signal.", "B) Convertir un signal électrique en ondes électromagnétiques.", "C) Stocker de l’énergie.", "D) Filtrer les fréquences."], 
-     "B", 
-     "Une antenne émet ou reçoit des ondes électromagnétiques."
-    ],
-    ["30. Que mesure un multimètre ?", 
-     ["A) La température.", "B) La résistance, la tension, le courant.", "C) La fréquence uniquement.", "D) L’énergie."], 
-     "B", 
-     "Le multimètre mesure plusieurs grandeurs électriques : tension, courant, résistance."
-    ],
-    ["31. Que signifie 'gain' en électronique ?", 
-     ["A) La perte d’énergie.", "B) Le rapport entre la sortie et l’entrée d’un amplificateur.", "C) La fréquence.", "D) La résistance."], 
-     "B", 
-     "Le gain exprime combien un signal est amplifié (ou atténué)."
-    ],
-    ["32. Que fait une diode LED ?", 
-     ["A) Émet de la lumière lorsqu’elle est polarisée en direct.", "B) Amplifie un signal.", "C) Stocke de l’énergie.", "D) Convertit la lumière en courant."], 
-     "A", 
-     "La diode LED émet de la lumière lorsqu’elle est traversée par un courant dans le bon sens."
-    ],
-    ["33. Un oscillateur produit :", 
-     ["A) Un signal continu.", "B) Un signal périodique.", "C) Une tension fixe.", "D) Un signal aléatoire."], 
-     "B", 
-     "Un oscillateur génère un signal périodique, souvent sinusoïdal ou carré."
-    ],
-    ["34. Que signifie 'impédance' ?", 
-     ["A) Résistance dans un circuit continu.", "B) Opposition au courant dans un circuit alternatif.", "C) Tension maximale.", "D) Courant maximal."], 
-     "B", 
-     "L’impédance est la résistance au passage du courant alternatif, incluant résistance, inductance et capacité."
-    ],
-    ["35. Quel composant est sensible à la lumière ?", 
-     ["A) Résistance", "B) Photodiode", "C) Inductance", "D) Condensateur"], 
-     "B", 
-     "La photodiode génère un courant ou change sa conductivité en fonction de la lumière reçue."
-    ],
-    ["36. Quel est l’effet d’un transformateur ?", 
-     ["A) Changer la fréquence.", "B) Changer la tension.", "C) Stocker l’énergie.", "D) Amplifier le courant."], 
-     "B", 
-     "Le transformateur permet de modifier la tension d’un courant alternatif."
-    ],
-    ["37. Qu’est-ce que la fréquence de coupure d’un filtre ?", 
-     ["A) Fréquence où le signal est amplifié.", "B) Fréquence où le signal est atténué de moitié (-3dB).", "C) Fréquence maximale.", "D) Fréquence minimale."], 
-     "B", 
-     "La fréquence de coupure est la fréquence à laquelle le signal est atténué à environ 70% de sa valeur initiale."
-    ],
-    ["38. Que fait un circuit intégré linéaire ?", 
-     ["A) Amplifie des signaux analogiques.", "B) Stocke de l’énergie.", "C) Traite des signaux numériques.", "D) Convertit la tension."], 
-     "A", 
-     "Les circuits intégrés linéaires manipulent des signaux analogiques de manière proportionnelle."
-    ],
-    ["39. Quel est le rôle d’un convertisseur analogique-numérique ?", 
-     ["A) Convertir un signal numérique en analogique.", "B) Convertir un signal analogique en numérique.", "C) Amplifier un signal.", "D) Stocker de l’énergie."], 
-     "B", 
-     "Le convertisseur ADC transforme un signal analogique en données numériques."
-    ],
-    ["40. Que signifie la notation '1kΩ' ?", 
-     ["A) 1 ohm", "B) 1000 ohms", "C) 0.1 ohm", "D) 10 ohms"], 
-     "B", 
-     "Le préfixe kilo (k) signifie 1000, donc 1kΩ = 1000 ohms."
-    ],
-    ["41. Quel est le rôle d’un relais ?", 
-     ["A) Amplifier un signal.", "B) Stocker de l’énergie.", "C) Commuter un circuit à l’aide d’une bobine électromagnétique.", "D) Convertir la tension."], 
-     "C", 
-     "Le relais utilise une bobine électromagnétique pour ouvrir ou fermer un circuit électrique."
-    ],
-    ["42. Quel composant est utilisé pour la régulation de tension ?", 
-     ["A) Résistance", "B) Transistor", "C) Régulateur de tension", "D) Condensateur"], 
-     "C", 
-     "Le régulateur de tension maintient une tension de sortie constante malgré les variations d’entrée ou de charge."
-    ],
-    ["43. Quel est le rôle d’un amplificateur opérationnel ?", 
-     ["A) Amplifier le signal avec haute précision.", "B) Stocker de l’énergie.", "C) Convertir le courant en tension.", "D) Filtrer le signal."], 
-     "A", 
-     "L’amplificateur opérationnel est un composant utilisé pour l’amplification précise et la manipulation des signaux analogiques."
-    ],
-    ["44. Que signifie 'MOSFET' ?", 
-     ["A) Metal-Oxide-Silicon Field Effect Transistor", "B) Multi-Output Signal Frequency Electronic Transformer", "C) Micro-Optical Semiconductor Field Energy Transistor", "D) None of the above"], 
-     "A", 
-     "Le MOSFET est un type de transistor à effet de champ très utilisé en électronique."
-    ],
-    ["45. Quel composant est utilisé pour protéger un circuit contre les surtensions ?", 
-     ["A) Fusible", "B) Diode Zener", "C) Varistance", "D) Résistance"], 
-     "C", 
-     "La varistance protège un circuit en limitant les surtensions transitoires."
-    ],
-    ["46. Comment est appelée la fréquence à laquelle un circuit résonne ?", 
-     ["A) Fréquence de coupure", "B) Fréquence fondamentale", "C) Fréquence de résonance", "D) Fréquence harmonique"], 
-     "C", 
-     "La fréquence de résonance est celle où un circuit RLC oscille avec une amplitude maximale."
-    ],
-    ["47. Quel composant électronique utilise un semi-conducteur dopé ?", 
-     ["A) Résistance", "B) Diode", "C) Bobine", "D) Condensateur"], 
-     "B", 
-     "La diode est un composant semi-conducteur dopé permettant le passage du courant dans un seul sens."
-    ],
-    ["48. Qu’est-ce qu’une alimentation stabilisée ?", 
-     ["A) Une source de courant variable.", "B) Une source fournissant une tension constante.", "C) Un convertisseur DC-AC.", "D) Un circuit oscillant."], 
-     "B", 
-     "Une alimentation stabilisée délivre une tension constante, peu importe les variations de charge."
-    ],
-    ["49. Quel est le rôle d’un amplificateur à transistors ?", 
-     ["A) Amplifier un signal.", "B) Stocker de l’énergie.", "C) Convertir la tension.", "D) Commuter un circuit."], 
-     "A", 
-     "Les transistors sont utilisés dans les amplificateurs pour augmenter la puissance d’un signal."
-    ],
-    ["50. Que signifie la valeur '10µF' sur un condensateur ?", 
-     ["A) 10 microfarads", "B) 10 millifarads", "C) 10 farads", "D) 10 nanofarads"], 
-     "A", 
-     "Le symbole µF signifie microfarads, une unité de capacité égale à 10^-6 farads."
-    ]
-  ];
+        <div id="quizContainer">
+            <!-- Les questions seront générées ici -->
+        </div>
 
-  const container = document.getElementById('cards-container');
+        <div id="scoreCard" class="score-card hidden">
+            <h2>Quiz terminé !</h2>
+            <div class="score-number" id="finalScore">0/50</div>
+            <p id="scoreMessage"></p>
+            <button class="btn btn-primary" onclick="restartQuiz()">Recommencer</button>
+        </div>
+    </div>
 
-  questions.forEach((q, i) => {
-    const [question, options, correct, explanation] = q;
-    const card = document.createElement('div');
-    card.classList.add('card');
-    card.id = `card-${i+1}`;
+    <script>
+        const questions = [
+            {
+                question: "Quelle est l'unité de la charge électrique ?",
+                options: ["Ampère (A)", "Coulomb (C)", "Volt (V)", "Watt (W)"],
+                correct: 1,
+                explanation: "L'unité de charge électrique est le Coulomb (C). Un électron porte une charge de 1.6022×10⁻¹⁹ C."
+            },
+            {
+                question: "Comment est définie l'intensité du courant électrique ?",
+                options: ["i = q/t", "i = dq/dt", "i = v/r", "i = p/v"],
+                correct: 1,
+                explanation: "L'intensité du courant électrique est définie comme le taux de déplacement de la charge électrique : i = dq/dt"
+            },
+            {
+                question: "Dans quel sens circule conventionnellement le courant électrique ?",
+                options: ["Dans le sens des électrons", "Opposé au sens des électrons", "Perpendiculaire aux électrons", "Variable selon le circuit"],
+                correct: 1,
+                explanation: "Le sens conventionnel du courant électrique est opposé au sens de déplacement des électrons."
+            },
+            {
+                question: "Quelle est la formule de la tension électrique ?",
+                options: ["v = q/w", "v = w/q", "v = dw/dq", "v = dq/dw"],
+                correct: 2,
+                explanation: "La tension électrique est définie comme v = dw/dq, où w est l'énergie et q la charge."
+            },
+            {
+                question: "Quelle est l'unité de la tension électrique ?",
+                options: ["Ampère (A)", "Coulomb (C)", "Volt (V)", "Joule (J)"],
+                correct: 2,
+                explanation: "L'unité de la tension électrique est le Volt (V)."
+            },
+            {
+                question: "Comment calcule-t-on la puissance électrique ?",
+                options: ["p = v + i", "p = v - i", "p = v × i", "p = v / i"],
+                correct: 2,
+                explanation: "La puissance électrique est calculée par p = v × i, où v est la tension et i le courant."
+            },
+            {
+                question: "Quelle est l'unité de la puissance électrique ?",
+                options: ["Volt (V)", "Ampère (A)", "Watt (W)", "Ohm (Ω)"],
+                correct: 2,
+                explanation: "L'unité de la puissance électrique est le Watt (W)."
+            },
+            {
+                question: "Que stipule la loi de conservation de l'énergie dans un circuit ?",
+                options: ["∑p = 1", "∑p = ∞", "∑p = 0", "∑p = -1"],
+                correct: 2,
+                explanation: "La loi de conservation de l'énergie stipule que la somme algébrique des puissances dans un circuit doit être nulle : ∑p = 0"
+            },
+            {
+                question: "Qu'est-ce qu'un composant passif ?",
+                options: ["Un composant qui ajoute de l'énergie", "Un composant qui ne peut pas fonctionner", "Un composant qui n'ajoute pas d'énergie au circuit", "Un composant uniquement résistif"],
+                correct: 2,
+                explanation: "Un composant passif est un composant qui n'ajoute pas d'énergie au circuit. Il dissipe ou transforme généralement l'énergie."
+            },
+            {
+                question: "Quelle est la loi d'Ohm ?",
+                options: ["V = R + I", "V = R - I", "V = R × I", "V = R / I"],
+                correct: 2,
+                explanation: "La loi d'Ohm s'exprime par V = R × I, où V est la tension, R la résistance et I le courant."
+            },
+            {
+                question: "Comment calcule-t-on la résistance d'un matériau ?",
+                options: ["R = ρA/l", "R = ρl/A", "R = ρ/Al", "R = Al/ρ"],
+                correct: 1,
+                explanation: "La résistance d'un matériau se calcule par R = ρl/A, où ρ est la résistivité, l la longueur et A la section."
+            },
+            {
+                question: "Quelle est l'unité de la résistivité ?",
+                options: ["Ω", "Ω·m", "Ω/m", "m/Ω"],
+                correct: 1,
+                explanation: "L'unité de la résistivité est l'ohm-mètre (Ω·m)."
+            },
+            {
+                question: "Comment se comportent les résistances en série ?",
+                options: ["Req = 1/R1 + 1/R2 + ...", "Req = R1 + R2 + ...", "Req = R1 × R2", "Req = R1 / R2"],
+                correct: 1,
+                explanation: "En série, la résistance équivalente est la somme des résistances : Req = R1 + R2 + ..."
+            },
+            {
+                question: "Comment se comportent les résistances en parallèle ?",
+                options: ["1/Req = R1 + R2 + ...", "1/Req = 1/R1 + 1/R2 + ...", "Req = R1 + R2 + ...", "Req = R1 × R2"],
+                correct: 1,
+                explanation: "En parallèle, l'inverse de la résistance équivalente est la somme des inverses : 1/Req = 1/R1 + 1/R2 + ..."
+            },
+            {
+                question: "Qu'est-ce qu'un condensateur ?",
+                options: ["Un composant qui génère du courant", "Un composant qui emmagasine des charges", "Un composant qui résiste au courant", "Un composant qui amplifie le signal"],
+                correct: 1,
+                explanation: "Un condensateur est un composant qui peut emmagasiner puis restituer des charges électriques."
+            },
+            {
+                question: "Comment est constitué un condensateur ?",
+                options: ["D'une bobine de fil", "De deux surfaces conductrices séparées par un diélectrique", "D'un semi-conducteur", "D'une résistance variable"],
+                correct: 1,
+                explanation: "Un condensateur est constitué de deux surfaces conductrices séparées par une couche isolante appelée diélectrique."
+            },
+            {
+                question: "Quelle est la relation fondamentale d'un condensateur ?",
+                options: ["C = V/Q", "C = Q/V", "C = Q×V", "C = V-Q"],
+                correct: 1,
+                explanation: "La relation fondamentale d'un condensateur est C = Q/V, où C est la capacité, Q la charge et V la tension."
+            },
+            {
+                question: "Comment calcule-t-on la capacité d'un condensateur plan ?",
+                options: ["C = εd/A", "C = εA/d", "C = ε/Ad", "C = Ad/ε"],
+                correct: 1,
+                explanation: "La capacité d'un condensateur plan se calcule par C = εA/d, où ε est la permittivité, A la surface et d la distance."
+            },
+            {
+                question: "Quelle est l'unité de la capacité ?",
+                options: ["Coulomb (C)", "Farad (F)", "Henry (H)", "Ohm (Ω)"],
+                correct: 1,
+                explanation: "L'unité de la capacité est le Farad (F)."
+            },
+            {
+                question: "Comment varie le courant dans un condensateur ?",
+                options: ["ic = C×vc", "ic = vc/C", "ic = C×dvc/dt", "ic = dvc/dt"],
+                correct: 2,
+                explanation: "Le courant dans un condensateur varie selon ic = C×dvc/dt, proportionnel à la dérivée de la tension."
+            },
+            {
+                question: "Comment se comportent les condensateurs en parallèle ?",
+                options: ["1/Ceq = 1/C1 + 1/C2 + ...", "Ceq = C1 + C2 + ...", "Ceq = C1 × C2", "Ceq = C1 / C2"],
+                correct: 1,
+                explanation: "En parallèle, les condensateurs s'additionnent : Ceq = C1 + C2 + ..."
+            },
+            {
+                question: "Comment se comportent les condensateurs en série ?",
+                options: ["Ceq = C1 + C2 + ...", "1/Ceq = 1/C1 + 1/C2 + ...", "Ceq = C1 × C2", "Ceq = C1 / C2"],
+                correct: 1,
+                explanation: "En série, l'inverse de la capacité équivalente est la somme des inverses : 1/Ceq = 1/C1 + 1/C2 + ..."
+            },
+            {
+                question: "Quelle est l'énergie stockée dans un condensateur ?",
+                options: ["W = CV²", "W = ½CV²", "W = 2CV²", "W = C/V²"],
+                correct: 1,
+                explanation: "L'énergie stockée dans un condensateur est W = ½CV² = ½Q²/C"
+            },
+            {
+                question: "Qu'est-ce qu'une inductance ?",
+                options: ["Une résistance variable", "Une bobine de matériau conducteur", "Un condensateur cylindrique", "Une source de tension"],
+                correct: 1,
+                explanation: "Une inductance est une bobine de matériau conducteur qui crée un champ magnétique variable."
+            },
+            {
+                question: "Quelle est l'unité de l'inductance ?",
+                options: ["Farad (F)", "Henry (H)", "Ohm (Ω)", "Weber (Wb)"],
+                correct: 1,
+                explanation: "L'unité de l'inductance est le Henry (H)."
+            },
+            {
+                question: "Comment varie la tension aux bornes d'une inductance ?",
+                options: ["VL = L×iL", "VL = iL/L", "VL = L×diL/dt", "VL = diL/dt"],
+                correct: 2,
+                explanation: "La tension aux bornes d'une inductance est VL = L×diL/dt, proportionnelle à la dérivée du courant."
+            },
+            {
+                question: "Comment se comportent les inductances en série ?",
+                options: ["1/Leq = 1/L1 + 1/L2 + ...", "Leq = L1 + L2 + ...", "Leq = L1 × L2", "Leq = L1 / L2"],
+                correct: 1,
+                explanation: "En série, les inductances s'additionnent : Leq = L1 + L2 + ..."
+            },
+            {
+                question: "Comment se comportent les inductances en parallèle ?",
+                options: ["Leq = L1 + L2 + ...", "1/Leq = 1/L1 + 1/L2 + ...", "Leq = L1 × L2", "Leq = L1 / L2"],
+                correct: 1,
+                explanation: "En parallèle, l'inverse de l'inductance équivalente est la somme des inverses : 1/Leq = 1/L1 + 1/L2 + ..."
+            },
+            {
+                question: "Quelle est l'énergie stockée dans une inductance ?",
+                options: ["W = LI²", "W = ½LI²", "W = 2LI²", "W = L/I²"],
+                correct: 1,
+                explanation: "L'énergie stockée dans une inductance est W = ½LI²"
+            },
+            {
+                question: "Qu'est-ce qu'une source de tension idéale ?",
+                options: ["Une source avec des pertes", "Une source sans pertes à tension constante", "Une source à courant variable", "Une source résistive"],
+                correct: 1,
+                explanation: "Une source de tension idéale est une source sans pertes qui maintient une tension constante quel que soit le courant."
+            },
+            {
+                question: "Comment représente-t-on une source de tension réelle ?",
+                options: ["Source idéale seule", "Source idéale + résistance en parallèle", "Source idéale + résistance en série", "Source idéale + condensateur"],
+                correct: 2,
+                explanation: "Une source de tension réelle se représente par une source idéale en série avec sa résistance interne."
+            },
+            {
+                question: "Qu'est-ce qu'une source de courant idéale ?",
+                options: ["Une source à tension constante", "Une source à courant constant indépendant de la tension", "Une source résistive", "Une source capacitive"],
+                correct: 1,
+                explanation: "Une source de courant idéale délivre un courant constant, indépendant de la tension à ses bornes."
+            },
+            {
+                question: "Comment représente-t-on une source de courant réelle ?",
+                options: ["Source idéale + résistance en série", "Source idéale + résistance en parallèle", "Source idéale seule", "Source idéale + inductance"],
+                correct: 1,
+                explanation: "Une source de courant réelle se représente par une source idéale en parallèle avec sa résistance interne."
+            },
+            {
+                question: "Que signifie fem dans un circuit ?",
+                options: ["Force électro-mécanique", "Force électromotrice", "Fréquence électro-magnétique", "Fonction électronique maximale"],
+                correct: 1,
+                explanation: "fem signifie force électromotrice, qui représente l'influence déterminante qui fait qu'un courant circule."
+            },
+            {
+                question: "Quelle est la différence entre fem et ddp ?",
+                options: ["Aucune différence", "La fem est dans la source, la ddp entre deux points", "La ddp est plus grande", "La fem est négative"],
+                correct: 1,
+                explanation: "La fem (force électromotrice) est dans la source, tandis que la ddp (différence de potentiel) est l'énergie transférée entre deux points."
+            },
+            {
+                question: "Dans une source, dans quel sens circule le courant ?",
+                options: ["Du + vers le -", "Du - vers le +", "Perpendiculairement", "Variable"],
+                correct: 1,
+                explanation: "Dans une source, le courant circule de la borne négative vers la borne positive (à l'intérieur de la source)."
+            },
+            {
+                question: "Dans un composant passif, dans quel sens circule le courant ?",
+                options: ["Du - vers le +", "Du + vers le -", "Perpendiculairement", "Variable"],
+                correct: 1,
+                explanation: "Dans un composant passif, le courant circule de la borne positive vers la borne négative."
+            },
+            {
+                question: "Quelle est la caractéristique principale de l'électronique ?",
+                options: ["Étude des machines", "Étude des phénomènes de conduction électrique", "Étude des matériaux", "Étude des structures"],
+                correct: 1,
+                explanation: "L'électronique s'intéresse aux phénomènes de conduction électrique et aux équipements associés."
+            },
+            {
+                question: "Que traite l'électronique selon la définition du cours ?",
+                options: ["Seulement les circuits", "Le mouvement des porteurs de charge dans divers milieux", "Seulement les semi-conducteurs", "Seulement les télécommunications"],
+                correct: 1,
+                explanation: "L'électronique traite du mouvement des porteurs de charge dans le vide, les gaz et les semi-conducteurs."
+            },
+            {
+                question: "Quelle est la charge d'un électron ?",
+                options: ["1.6022×10⁻¹⁹ C", "1.6022×10¹⁹ C", "3.14×10⁻¹⁹ C", "2.71×10⁻¹⁹ C"],
+                correct: 0,
+                explanation: "Un électron porte une charge de 1.6022×10⁻¹⁹ Coulombs."
+            },
+            {
+                question: "Quand un atome devient-il positif ?",
+                options: ["Quand il gagne des électrons", "Quand il perd des électrons", "Quand il est neutre", "Quand il est excité"],
+                correct: 1,
+                explanation: "Un atome devient positif lorsque certains électrons manquent, créant un déficit de charges négatives."
+            },
+            {
+                question: "Quand un atome devient-il négatif ?",
+                options: ["Quand il perd des électrons", "Quand il a un surplus d'électrons", "Quand il est ionisé", "Quand il est au repos"],
+                correct: 1,
+                explanation: "Un atome devient négatif lorsqu'il y a un surplus d'électrons par rapport aux protons du noyau."
+            },
+            {
+                question: "Quelle est la relation entre conductivité et résistivité ?",
+                options: ["σ = ρ", "σ = 1/ρ", "σ = ρ²", "σ = √ρ"],
+                correct: 1,
+                explanation: "La conductivité σ est l'inverse de la résistivité ρ : σ = 1/ρ"
+            },
+            {
+                question: "Quelle est l'unité de la conductivité ?",
+                options: ["Ω·m", "S/m", "A/V", "V·m"],
+                correct: 1,
+                explanation: "L'unité de conductivité est le siemens par mètre (S/m)."
+            },
+            {
+                question: "Qu'est-ce qui caractérise un conducteur ohmique ?",
+                options: ["Sa résistance varie", "Son courant est constant", "Sa caractéristique est une droite passant par l'origine", "Sa tension est nulle"],
+                correct: 2,
+                explanation: "Un conducteur ohmique a une caractéristique courant-tension qui est une droite passant par l'origine."
+            },
+            {
+                question: "Comment calcule-t-on l'inductance d'une bobine à air ?",
+                options: ["L = μ₀AN²/l", "L = μ₀Al/N²", "L = μ₀N²l/A", "L = μ₀A/N²l"],
+                correct: 0,
+                explanation: "L'inductance d'une bobine à air se calcule par L = μ₀AN²/l, où N est le nombre de spires, A la section, l la longueur."
+            },
+            {
+                question: "Que représente μ₀ dans la formule de l'inductance ?",
+                options: ["La résistivité", "La permittivité du vide", "La perméabilité de l'espace libre", "La conductivité"],
+                correct: 2,
+                explanation: "μ₀ représente la perméabilité de l'espace libre (ou de l'air) dans les calculs d'inductance."
+            },
+            {
+                question: "Qu'est-ce qu'un circuit électrique ?",
+                options: ["Seulement des composants passifs", "Une combinaison d'éléments actifs et passifs avec au moins un chemin fermé", "Seulement des résistances", "Un générateur seul"],
+                correct: 1,
+                explanation: "Un circuit électrique est une combinaison d'éléments actifs et passifs reliés par des points terminaux fournissant au moins un chemin fermé pour la circulation des charges."
+            },
+            {
+                question: "Si la puissance est positive dans un circuit, que signifie cela ?",
+                options: ["Le circuit fournit de l'énergie", "Le circuit est alimenté", "Le circuit est en panne", "Le circuit résiste"],
+                correct: 1,
+                explanation: "Si la puissance est positive, cela signifie que le circuit à l'intérieur de la boîte est alimenté (reçoit de l'énergie)."
+            },
+            {
+                question: "Si la puissance est négative dans un circuit, que signifie cela ?",
+                options: ["Le circuit est défaillant", "La puissance est extraite du circuit", "Le circuit consomme plus", "Il y a une erreur"],
+                correct: 1,
+                explanation: "Si la puissance est négative, cela signifie que la puissance est extraite du circuit (le circuit fournit de l'énergie)."
+            }
+        ];
 
-    const cardInner = document.createElement('div');
-    cardInner.classList.add('card-inner');
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswer = null;
+        let answered = false;
 
-    const cardFront = document.createElement('div');
-    cardFront.classList.add('card-front');
-    cardFront.innerHTML = `
-      <p>${question}</p>
-      <ul class="options">
-        ${options.map((opt, idx) => `<li><strong>${opt.charAt(0)}</strong>) ${opt.slice(3)}</li>`).join('')}
-      </ul>
-      <div class="note">(Clique sur la carte pour voir la réponse)</div>
-    `;
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            const container = document.getElementById('quizContainer');
+            
+            container.innerHTML = `
+                <div class="question-card">
+                    <div class="question-number">${currentQuestion + 1}</div>
+                    <div class="question-text">${question.question}</div>
+                    <div class="options">
+                        ${question.options.map((option, index) => `
+                            <div class="option ${answered ? (index === question.correct ? 'correct' : (selectedAnswer === index ? 'incorrect' : 'disabled')) : ''}" 
+                                 onclick="${!answered ? `selectAnswer(${index})` : ''}">
+                                <span class="option-letter">${String.fromCharCode(65 + index)}</span>
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                    ${answered ? `
+                        <div class="explanation show">
+                            <h4>Explication :</h4>
+                            <p>${question.explanation}</p>
+                        </div>
+                    ` : ''}
+                    <div class="buttons">
+                        <button class="btn btn-secondary" onclick="previousQuestion()" ${currentQuestion === 0 ? 'disabled' : ''}>
+                            Précédent
+                        </button>
+                        <button class="btn btn-primary" onclick="${answered ? 'nextQuestion()' : 'checkAnswer()'}" ${!answered && selectedAnswer === null ? 'disabled' : ''}>
+                            ${answered ? (currentQuestion === questions.length - 1 ? 'Voir les résultats' : 'Suivant') : 'Valider'}
+                        </button>
+                    </div>
+                </div>
+            `;
 
-    const cardBack = document.createElement('div');
-    cardBack.classList.add('card-back');
-    cardBack.innerHTML = `
-      <div>Réponse correcte : <span class="answer">${correct}</span></div>
-      <div class="explanation">${explanation}</div>
-    `;
+            updateProgress();
+        }
 
-    cardInner.appendChild(cardFront);
-    cardInner.appendChild(cardBack);
-    card.appendChild(cardInner);
-    container.appendChild(card);
+        function selectAnswer(index) {
+            if (answered) return;
+            
+            selectedAnswer = index;
+            document.querySelectorAll('.option').forEach((option, i) => {
+                if (i === index) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            });
+            
+            document.querySelector('.btn-primary').disabled = false;
+        }
 
-    card.addEventListener('click', () => {
-      card.classList.toggle('flipped');
-    });
-  });
+        function checkAnswer() {
+            if (selectedAnswer === null || answered) return;
+            
+            answered = true;
+            const question = questions[currentQuestion];
+            
+            if (selectedAnswer === question.correct) {
+                score++;
+            }
+            
+            loadQuestion();
+        }
 
-  // Animation: afficher les cartes une par une
-  let delay = 0;
-  document.querySelectorAll('.card').forEach(card => {
-    setTimeout(() => {
-      card.classList.add('visible');
-    }, delay);
-    delay += 70;
-  });
-</script>
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                selectedAnswer = null;
+                answered = false;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
 
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                selectedAnswer = null;
+                answered = false;
+                loadQuestion();
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / questions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${currentQuestion}/${questions.length}`;
+        }
+
+        function showResults() {
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('scoreCard').classList.remove('hidden');
+            
+            const finalScore = document.getElementById('finalScore');
+            finalScore.textContent = `${score}/${questions.length}`;
+            
+            const percentage = Math.round((score / questions.length) * 100);
+            const scoreMessage = document.getElementById('scoreMessage');
+            
+            if (percentage >= 80) {
+                scoreMessage.textContent = "Excellent ! Vous maîtrisez parfaitement les bases de l'électronique analogique.";
+            } else if (percentage >= 60) {
+                scoreMessage.textContent = "Bien joué ! Vous avez de bonnes connaissances en électronique analogique.";
+            } else if (percentage >= 40) {
+                scoreMessage.textContent = "Pas mal ! Avec un peu plus de pratique, vous progresserez rapidement.";
+            } else {
+                scoreMessage.textContent = "Continuez à apprendre ! Consultez les explications pour améliorer vos connaissances.";
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            selectedAnswer = null;
+            answered = false;
+            
+            document.getElementById('quizContainer').classList.remove('hidden');
+            document.getElementById('scoreCard').classList.add('hidden');
+            
+            loadQuestion();
+        }
+
+        // Initialiser le quiz
+        window.onload = loadQuestion;
+    </script>
 </body>
 </html>
